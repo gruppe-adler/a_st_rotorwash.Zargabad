@@ -1,0 +1,3 @@
+class cfgFunctions {
+	#include "grad_rotorwash\cfgFunctions.hpp"	
+};

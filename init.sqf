@@ -1,0 +1,1 @@
+execVM "grad_rotorwash\init.sqf";
