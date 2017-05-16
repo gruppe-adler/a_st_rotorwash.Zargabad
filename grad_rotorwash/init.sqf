@@ -39,4 +39,26 @@ if (hasInterface) then {
  	grad_rotorwash_linger_rubbing = 100; 
  	grad_rotorwash_linger_uplift = 0; 
  	grad_rotorwash_linger_interval = 0.05;
+
+ 	player addEventhandler ["engine",
+ 		{
+ 			if (_this select 1 && (_this select 0) isKindOf 'Air') then {
+
+ 				hint "engine on";
+ 				
+ 				[_this select 0] spawn {
+ 					params ["_heli"];
+ 					_heli setVariable ["grad_rotorwash_emitterStatic",31];
+ 					sleep 1;
+ 					_heli setVariable ["grad_rotorwash_emitterStatic",21];
+ 					sleep 1;
+ 					_heli setVariable ["grad_rotorwash_emitterStatic",11];
+ 					sleep 1;
+ 					_heli setVariable ["grad_rotorwash_emitterStatic",6];
+ 					sleep 1;
+ 					_heli setVariable ["grad_rotorwash_emitterStatic",0];
+ 				};
+ 			};
+ 		}
+ 	];
 };

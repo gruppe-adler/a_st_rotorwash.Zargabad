@@ -1,14 +1,40 @@
 params ["_heli", "_point", "_color"];
 
+grad_colorR = _color select 0;
+grad_colorG = _color select 1;
+grad_colorB = _color select 2;
+
 private ["_linger", "_wash"];
 
 _height = (getPosATL (_heli)) select 2;
 _speed = speed _heli;
 
-grad_transparency = 1 - (0.05*_height);
+grad_transparency = grad_transparency - (0.025*_height);
 
-if (_speed > 1) then {
-	grad_transparency = grad_transparency * (1/_speed);
+
+
+if (_speed < 1) then {
+	_timer = _heli getVariable ["grad_rotorwash_emitterStatic", 0];
+	_timer = _timer + 1;
+	_heli setVariable ["grad_rotorwash_emitterStatic", _timer];
+
+	if (_timer > 30) then {
+		grad_transparency =  grad_transparency/4;
+	} else {
+		if (_timer > 20) then {
+			grad_transparency = grad_transparency/3;
+		} else {
+			if (_timer > 10) then {
+				grad_transparency = grad_transparency/2;
+			} else {
+				if (_timer > 5) then {
+					grad_transparency = grad_transparency/1.5;
+				};
+			};
+		};
+	};
+} else {
+	_heli setVariable ["grad_rotorwash_emitterStatic", 0];
 };
 
 // linger + wash
@@ -28,7 +54,7 @@ grad_colorB = grad_colorR/1.5;
 */
 
 
- 
+/*
 if (!isMultiplayer) then {
 
 	hint parseText format ["
@@ -53,6 +79,7 @@ if (!isMultiplayer) then {
 	];
 
 };
+*/
 
 _wash setParticleCircle [15 - random 3, [1, 1, 0]];
 
@@ -64,14 +91,14 @@ _wash setParticleParams [
 		 grad_weight,
 		 grad_volume,
 		 grad_rubbing,
-		 [7, 7, 8, 9, 11], 
+		 [6, 7, 8, 9, 11], 
 		 [
-		 	[0, 0, 0, 0],
-		 	[0.1, 0.05, 0.025, 1],
-		 	[grad_colorR/2, grad_colorG/2, grad_colorB/2, grad_transparency],
-		 	[grad_colorR/1.5, grad_colorG/1.5, grad_colorB/1.5, grad_transparency],
-		 	[grad_colorR, grad_colorG, grad_colorB, grad_transparency],
-		 	[grad_colorR*1.5, grad_colorG*1.5, grad_colorB*1.5, grad_transparency/2],
+		 	[grad_colorR/4, grad_colorG/4, grad_colorB/4, 0],
+		 	[grad_colorR/3, grad_colorG/3, grad_colorB/3, 1 * grad_transparency],
+		 	[grad_colorR/2, grad_colorG/2, grad_colorB/2, 1 * grad_transparency],
+		 	[grad_colorR/1.2, grad_colorG/1.2, grad_colorB/1.2, 1 * grad_transparency],
+		 	[grad_colorR, grad_colorG, grad_colorB, 1 * grad_transparency],
+		 	[grad_colorR*1.5, grad_colorG*1.5, grad_colorB*1.5, 1 * grad_transparency/2],
 		 	[grad_colorR*2, grad_colorG*2, grad_colorB*2, 0]
 		 ], 
 		 [1000], 0, 0, "", "", _wash, 0, true, grad_bounce];
@@ -82,7 +109,7 @@ _wash setParticleRandom
 /*MoveVelocity*/	[0,0,0],
 /*rotationVel*/		2,
 /*Scale*/		0.5,
-/*Color*/		[0.1,0.05,0.025,0.1],
+/*Color*/		[0,0,0,0],
 /*randDirPeriod*/	1,
 /*randDirIntesity*/	1,
 /*Angle*/		0];
@@ -101,9 +128,9 @@ _linger setParticleParams [
 		 	
 		 	[grad_colorR, grad_colorG, grad_colorB, 0],
 		 	[grad_colorR, grad_colorG, grad_colorB, 1.0 * grad_transparency],
-		 	[grad_colorR, grad_colorG, grad_colorB, 1.0 * grad_transparency],
-		 	[grad_colorR, grad_colorG, grad_colorB, 1.0 * grad_transparency],
-		 	[grad_colorR, grad_colorG, grad_colorB, 0]
+		 	[grad_colorR*1.2, grad_colorG*1.2, grad_colorB*1.2, 1.0 * grad_transparency],
+		 	[grad_colorR*1.5, grad_colorG*1.5, grad_colorB*1.5, 1.0 * grad_transparency],
+		 	[grad_colorR*2, grad_colorG*2, grad_colorB*2, 0]
 		 ], 
 		 [0.08], 0, 0, "", "", _linger];
 
@@ -113,7 +140,7 @@ _linger setParticleRandom
 /*MoveVelocity*/	[0,0,0],
 /*rotationVel*/		0,
 /*Scale*/		0.2,
-/*Color*/		[0.1,0.05,0.025,0.1],
+/*Color*/		[0,0,0,0],
 /*randDirPeriod*/	0,
 /*randDirIntesity*/	0,
 /*Angle*/		0];
